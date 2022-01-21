@@ -6,3 +6,6 @@ We believe that this idea could be further explored in using the localisations a
 The plan is to modify state-of-the-art models from Ranftl [2] by adding extra layers and including a secondary input of known depth points.
 The reference SLAM network will be ORB-SLAM.
 The training can be done on synthetized data without the implication of SLAM.
+
+[1] Mukasa 3D Scene Mesh ICCV 2017
+[2] Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer, Ranftl
