@@ -42,6 +42,30 @@ class UniformSampling(DenseToSparse):
             prob = float(self.num_samples) / n_keep
             return np.bitwise_and(mask_keep, np.random.uniform(0, 1, depth.shape) < prob)
 
+class ORBSampling(DenseToSparse):
+    name = "uar"
+    def __init__(self, num_samples, max_depth=np.inf):
+        DenseToSparse.__init__(self)
+        self.num_samples = num_samples
+        self.max_depth = max_depth
+        self.orb = cv2.ORB_create()
+
+    def __repr__(self):
+        return "%s{ns=%d,md=%f}" % (self.name, self.num_samples, self.max_depth)
+
+    def dense_to_sparse(self, rgb, depth):
+        """
+        Samples pixels with `num_samples`/#pixels probability in `depth`.
+        Only pixels with a maximum depth of `max_depth` are considered.
+        If no `max_depth` is given, samples in all pixels
+        """
+        gray = (rgb2grayscale(rgb)*255).astype(np.uint8)
+        mask=np.zeros_like(depth,dtype=np.uint8)
+        keypoints, descriptor = self.orb.detectAndCompute(gray, None)
+        for keypoint in keypoints[:min(len(keypoints),self.num_samples)] :
+            x,y=keypoint.pt
+            mask[-int(y),int(x)]=1
+        return mask
 
 class SimulatedStereo(DenseToSparse):
     name = "sim_stereo"
